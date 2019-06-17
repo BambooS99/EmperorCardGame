@@ -15,7 +15,11 @@ Bug Documentation
 public class CardGame {
     static int numberx = 5;  //numberx runs the game 5 times
     static int userTeamPick;
+    static boolean emperorLimiter = false;
+    static boolean citizenLimiter = false;
+    static int slaveLimiter = 0;
     static int cardLimiter = 0;
+    static int wins = 0;
 
 
     public static void main(String[] args) {
@@ -79,6 +83,9 @@ public class CardGame {
     }
 
     public static void emperorsTurn() {
+        if (cardLimiter >= 4){
+            citizenLimiter = true;
+        }
 
         Random cards = new Random();
         int computerinput = 0;
@@ -93,36 +100,48 @@ public class CardGame {
         System.out.println("Please pick the card you are playing. \n if you are playing the Emperor press 1, if you are playing the citizen press 2 ");
         int userinput = sc.nextInt();
 
-        if (userinput == 1 && computerinput == 1 && cardLimiter == 0) {
+        if (userinput == 1 && computerinput == 1 && emperorLimiter == false) {
             System.out.println("you have played the emperor! \n the emperor is defeated by the slave");
-                cardLimiter++;
-                if ((userinput == 1 && computerinput == 1 && cardLimiter == 1)) {
-                    System.out.println("you cannot play the emperor this turn \n you have played the citizen instead");
-            }
+            emperorLimiter =true;
+            System.out.println("you can no longer use the emperor");
+        } else if ((userinput == 1 && computerinput == 1 && emperorLimiter == true)) {
+            System.out.println("you cannot play the emperor this turn \n you have played the citizen instead. The citizen is defeated by the slave");
 
-        } else if (userinput == 1 && computerinput == 2) {
+            //make it so that the win/ lose is shown here
+
+
+        } else if (userinput == 1 && computerinput == 2 && emperorLimiter == false) {
             System.out.println("you have played the emperor the emperor defeats the citizen");
+            wins++;
 
             winOrLose();
-            wincounter();
+
             numberx--;
-        } else if (userinput == 2) { //when the user input is 2
-            if (computerinput == 1) {
+        } else if (userinput == 2 ) { //when the user input is 2
+            if (computerinput == 1 && citizenLimiter == false) {
                 System.out.println("you have played the citizen, this defeats the slave");
-                wincounter();
-            } else if (computerinput == 2) {
+
+                cardLimiter++;
+            } else if (computerinput == 2 && citizenLimiter == false) {
                 System.out.println("you have played the citizen, this ties with the citizen");
+                cardLimiter++;
             }
-            //print out something else if number is not 1,2 or 3
+           if (computerinput==1 &&  citizenLimiter == true) {
+
+                   System.out.println("you are out of citizen cards, you play the emperor instead, this is defeated by the slave");
+                   //i need to make it so that once you are out of a certain type of card it plays the emperor instead
+
+
+            }
+            else if (computerinput == 2  && citizenLimiter == true ){
+
+                System.out.println("you are out of citizen cards, you play the emperor instead,  this defeats the citizen");
+                wins++;
+           }
         }
     }
 
-    public static void wincounter() {
-        int i = 0;
-        if (i < 1) i++;
 
-        System.out.println("you have won " + i + " number of draws");
-    }
 
 
     public static void slavesTurn() {
@@ -152,7 +171,6 @@ public class CardGame {
             }
 
             winOrLose();
-            wincounter();
             numberx--;
         }
     }
@@ -195,7 +213,7 @@ public class CardGame {
 //6/10/2019 7:55 PM
 
 // All i need to do at this point is program the slave side to play and                                           \\
-//make it so that the slave and emperor can only be played once while the other cards can only be played twice      \\
+//make it so that the slave and emperor can only be played once while the other cards can only be played twice      \\ done
 //include the rules                                                                                                   \\
 
 
