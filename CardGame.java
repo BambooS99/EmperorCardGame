@@ -17,9 +17,10 @@ public class CardGame {
     static int userTeamPick;
     static boolean emperorLimiter = false;
     static boolean citizenLimiter = false;
-    static int slaveLimiter = 0;
+    static boolean slaveLimiter = false;
     static int cardLimiter = 0;
     static int wins = 0;
+    static int losses = 0;
 
 
     public static void main(String[] args) {
@@ -50,34 +51,31 @@ public class CardGame {
 
         if (number == 1) {               //cause of the Bug 1)   // &&  userTeamPick == 1
             System.out.println("your are playing on the emperor side");
-
+            emperorsTurn();
+            numberx--;
         }
         if (number == 2) {
             //System.out.println("You are playing on the slave side ");
             //  slavesTurn();
             // numberx--;
         }
-        if (number == 1) {
 
-            emperorsTurn();
-            numberx--;
-
-
-        }
 
 
     }
 
     public static void winOrLose() {
-        int wincounter = 0;
-        String win = "You won the round";
-        String lose = "You lose the round ";
+      while (wins + losses == 5) {
+          if (wins > losses) {
+              System.out.println("you won the game, congratulations!");
 
-        if (wincounter > 0) {
-            System.out.println(win);
-        } else if (wincounter == 0) {
-            System.out.print(lose);
-        }
+          }
+          else if (wins < losses) {
+              System.out.println("you lose the game, better luck next time");
+          }
+
+
+      }
 
 
     }
@@ -122,6 +120,7 @@ public class CardGame {
                 System.out.println("you have played the citizen, this defeats the slave");
 
                 cardLimiter++;
+                wins++;
             } else if (computerinput == 2 && citizenLimiter == false) {
                 System.out.println("you have played the citizen, this ties with the citizen");
                 cardLimiter++;
@@ -139,12 +138,20 @@ public class CardGame {
                 wins++;
            }
         }
+        winOrLose();
     }
 
 
 
 
+
+
+
     public static void slavesTurn() {
+        if (cardLimiter >= 4){
+            citizenLimiter = true;
+        }
+
         Random cards = new Random();
         int computerinput = 0;
         int numberx = 5;
@@ -158,21 +165,46 @@ public class CardGame {
         System.out.println("Please pick the card you are playing. \n if you are playing the Slave press 3, if you are playing the citizen press 4 ");
         int userinput = sc.nextInt();
 
-        if (userinput == 3 && computerinput == 1) {
-            System.out.println("you have played the slave! \n the emperor is defeated by the slave");
+        if (userinput == 3 && computerinput == 1 && slaveLimiter == false) {
+            System.out.println("you have played the slave! \n the slave defeats the emperor");
+            slaveLimiter =true;
+            System.out.println("you can no longer use the slave");
+        } else if ((userinput == 3 && computerinput == 1 && emperorLimiter == true)) {
+            System.out.println("you cannot play the slave this turn \n you have played the citizen instead. The citizen is defeated by the emperor");
 
-        } else if (userinput == 3 && computerinput == 2) {
-            System.out.println("you have played the slave loses to the citizen");
-            if (userinput == 4 && computerinput == 1) {
-                System.out.println("you have played the citizen, this is defeated by the slave");
-            } else if (userinput == 4 && computerinput == 2) {
+            //make it so that the win/ lose is shown here
 
-                System.out.println("the citizen ties with the citizen");
-            }
+
+        } else if (userinput == 3 && computerinput == 2 && emperorLimiter == false) {
+            System.out.println("you have played the slave the slave is defeated by the citizen");
+            losses++;
 
             winOrLose();
+
             numberx--;
+        } else if (userinput == 4 ) { //when the user input is 4
+            if (computerinput == 1 && citizenLimiter == false) {
+                System.out.println("you have played the citizen, this is defeated by the emperor");
+
+                cardLimiter++;
+                losses++;
+            } else if (computerinput == 2 && citizenLimiter == false) {
+                System.out.println("you have played the citizen, this ties with the citizen");
+                cardLimiter++;
+            }
+            if  (computerinput==1 &&  citizenLimiter == true) {
+
+                System.out.println("you are out of citizen cards, you play the slave instead, this is defeats the emperor");
+                losses++;
+
+            }
+            else if (computerinput == 2  && citizenLimiter == true ){
+
+                System.out.println("you are out of citizen cards, you play the slave instead,  this is defeated by the citizen");
+                losses++;
+            }
         }
+        winOrLose();
     }
 
 
